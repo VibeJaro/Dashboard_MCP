@@ -7,3 +7,7 @@ Ich habe einen ersten, lauffähigen MCP-Server gebaut. Er liefert eine einfache 
 ## Schritt 2 – Landing-Page für Vercel ergänzt
 
 Ich habe eine statische Startseite ergänzt, damit das Vercel-Deployment unter der Root-URL nicht mehr mit 404 antwortet. Dort steht jetzt, wo die MCP- und Health-Endpunkte erreichbar sind, und die README wurde entsprechend aktualisiert.
+
+## Schritt 3 – Laborteam-Dashboard UI ergänzt
+
+Die MCP-App zeigt jetzt ein Laborteam-Dashboard mit fünf Experimenteinträgen in der linken Navigation. Beim Anklicken lädt eine Experimentübersicht mit Status, Messwerten, Schwerpunkten und nächsten Schritten. Die README wurde angepasst und ein kleiner UI-Test ergänzt.

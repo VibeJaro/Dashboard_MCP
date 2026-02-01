@@ -43,7 +43,7 @@ Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint 
 
 - Tool: `dashboard_mcp_hello`
 - UI Resource: `ui://dashboard_mcp/hello`
-- Ergebnis: Eine kurze Begrüßungsnachricht, die in der UI sichtbar ist.
+- Ergebnis: Eine Laborteam-Dashboard-UI mit 5 Experimenten in der linken Navigation und einer detaillierten Experimentübersicht inklusive Status- und Messwerten.
 
 ## Struktur
 

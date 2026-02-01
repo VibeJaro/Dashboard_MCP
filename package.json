@@ -1,10 +1,11 @@
 {
   "name": "dashboard-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node tests/ui.spec.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.0",
