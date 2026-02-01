@@ -20,7 +20,8 @@ Der Server läuft dann unter:
 2. Build Command leer lassen.
 3. Install Command: `npm install`
 4. Output Directory leer lassen.
-5. Nach dem Deploy sind die Endpoints:
+5. Nach dem Deploy ist die Startseite unter `https://<dein-projekt>.vercel.app` erreichbar.
+6. Die Endpoints sind:
    - MCP Endpoint: `https://<dein-projekt>.vercel.app/api/mcp`
    - Health Check: `https://<dein-projekt>.vercel.app/api/health`
 
@@ -49,5 +50,6 @@ Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint 
 - `server.js`: Lokaler Express-Server (Port 3001)
 - `api/mcp.js`: Vercel Function für den MCP Endpoint
 - `api/health.js`: Vercel Health Check
+- `index.html`: Statische Landing-Page für das Vercel-Deployment
 - `mcpServer.js`: MCP-Tool + UI-Resource Definition
 - `updates.md`: Menschliches Änderungslog
