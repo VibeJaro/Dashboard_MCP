@@ -27,3 +27,7 @@ Die UI zeigt jetzt Experimente mit Januar-2026-Daten. In der Detailansicht wurde
 ## Schritt 7 – Experimentplanung und Follow-up-Kacheln ergänzt
 
 Die UI enthält jetzt eine obere Umschaltleiste zwischen Experimentübersicht und Experimentplanung. Folgeversuche werden als eigene Kacheln mit „Übernehmen“ und „Verwerfen“ dargestellt; verworfene Kacheln verschwinden aus der Ansicht. In der Planung kann ein Basis-Experiment gewählt, mehrere neue Versuche angelegt und abschließend bestätigt werden (inklusive Hinweis auf die Information des Laboranten). Geplante Experimente erscheinen zusammen mit den letzten fünf Einträgen in der linken Liste. README und UI wurden entsprechend aktualisiert.
+
+## Schritt 8 – Planungsmodus überarbeitet und Seitenleiste aufgeteilt
+
+Die linke Navigation ist jetzt zweigeteilt: Oben stehen die letzten fünf Experimente, darunter erscheinen freigegebene geplante Experimente. Der Planungsmodus wurde komplett neu aufgebaut: Es gibt einen klaren Umschalter zwischen „Neuer Versuch“ (reiner Freitext) und „Folgeversuche“ auf Basis bestehender Experimente mit Änderungs- und Hinweistext sowie Anzahl. Vorschläge aus der Detailansicht erzeugen direkt einen Eintrag in der Versuchsplanung. Geplante Versuche bleiben bis zur Freigabe in der Planungsliste und wandern erst danach in die linke Übersicht. README und UI wurden entsprechend angepasst.
