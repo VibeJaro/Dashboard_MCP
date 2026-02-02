@@ -19,3 +19,7 @@ In `mcpServer.js` war im eingebetteten UI-Skript ein Backtick-Template-String en
 ## Schritt 5 – Hinweis auf Vercel Deployment Protection ergänzt
 
 Preview-Deployments können durch Vercel-Auth geschützt sein. MCP-Hosts bekommen dann eine HTML-Login-Seite mit 401 statt JSON und melden 500. Die README wurde um den Hinweis ergänzt, dass Deployment Protection deaktiviert oder ein Bypass-Token genutzt werden muss (oder Production-URL verwenden).
+
+## Schritt 6 – Experiment-Detailansicht aktualisiert (Jan 2026)
+
+Die UI zeigt jetzt Experimente mit Januar-2026-Daten. In der Detailansicht wurden Versuchsleiter in „Laborant/in“ umbenannt, der Standort entfernt und die alten Messwerte-/Schwerpunkte-/Schritte-Kacheln durch neue Karten ersetzt: Kurzfassung, Main Findings, Kommentar der Labor-Teamleitung, Folgeversuche sowie ein Hinweis auf den vollständigen Bericht. Die README wurde entsprechend aktualisiert.

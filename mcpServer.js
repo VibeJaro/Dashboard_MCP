@@ -260,6 +260,24 @@ const helloAppHtml = `<!doctype html>
         font-size: 13px;
         line-height: 1.6;
       }
+      .notes-text {
+        margin: 0;
+        color: #475569;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .report-link {
+        display: inline-flex;
+        margin-top: 6px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: #e0f2fe;
+        color: #0c4a6e;
+        font-weight: 600;
+        font-size: 13px;
+        text-decoration: none;
+        pointer-events: none;
+      }
       .server-card {
         display: flex;
         justify-content: space-between;
@@ -300,12 +318,12 @@ const helloAppHtml = `<!doctype html>
           <div class="brand-icon">LAB</div>
           <div>
             <h1>Laborteam Dashboard</h1>
-            <div class="status-pill">Prozesschemie · Q1/2024</div>
+            <div class="status-pill">Prozesschemie · Q1/2026</div>
           </div>
         </div>
         <div class="top-actions">
           <span class="status-pill">5 aktive Experimente</span>
-          <div class="status-pill">Leitung: Dr. M. Weber</div>
+          <div class="status-pill">Leitung: M. Weber</div>
         </div>
       </header>
 
@@ -331,33 +349,43 @@ const helloAppHtml = `<!doctype html>
                 <strong id="detail-project"></strong>
               </div>
               <div class="meta-item">
-                <span>Versuchsleiter</span>
+                <span>Laborant/in</span>
                 <strong id="detail-lead"></strong>
               </div>
               <div class="meta-item">
                 <span>Datum</span>
                 <strong id="detail-date"></strong>
               </div>
-              <div class="meta-item">
-                <span>Standort</span>
-                <strong id="detail-site"></strong>
-              </div>
             </div>
           </div>
 
           <div class="detail-grid">
             <div class="detail-card">
-              <h3>Messwerte (aktuell)</h3>
-              <div class="metrics" id="detail-metrics"></div>
+              <h3>Kurzfassung</h3>
+              <p class="notes-text" id="detail-summary-card"></p>
             </div>
             <div class="detail-card">
-              <h3>Schwerpunkte</h3>
-              <ul class="notes" id="detail-focus"></ul>
+              <h3>Main Findings</h3>
+              <ul class="notes" id="detail-findings"></ul>
             </div>
             <div class="detail-card">
-              <h3>Nächste Schritte</h3>
-              <ul class="notes" id="detail-steps"></ul>
+              <h3>Kommentar Labor-Teamleitung</h3>
+              <p class="notes-text" id="detail-comment"></p>
             </div>
+          </div>
+
+          <div class="detail-card">
+            <h3>Vorschläge für Folgeversuche</h3>
+            <ul class="notes" id="detail-followups"></ul>
+          </div>
+
+          <div class="detail-card">
+            <h3>Vollständiger Bericht</h3>
+            <p class="notes-text" id="detail-report"></p>
+            <a class="report-link" href="#" aria-disabled="true">Bericht öffnen</a>
+            <p class="notes-text" style="margin-top: 8px;">
+              Hinweis: Ein Klick würde den vollständigen PDF-Bericht im Dokumentenarchiv öffnen.
+            </p>
           </div>
 
           <div class="server-card">
@@ -374,134 +402,119 @@ const helloAppHtml = `<!doctype html>
     <script>
       const EXPERIMENTS_DATA = [
         {
-          id: "EXP-24-089",
-          name: "Katalysator-Screening Phase 1",
+          id: "EXP-26-011",
+          name: "Katalysator-Screening Phase 2",
           project: "Projekt Alpha-7",
-          date: "31.01.2024",
+          date: "08.01.2026",
           status: "completed",
-          lead: "Dr. M. Weber",
-          site: "Lab A3",
+          lead: "M. Weber",
+          teaser: "Screening abgeschlossen, Fokus liegt jetzt auf dem Temperaturfenster.",
           summary:
-            "Liganden L1–L5 gescreent. Höchste Selektivität bei L3, Umsatz bei 25°C jedoch unter Erwartung.",
-          metrics: [
-            { label: "Ausbeute", value: "87%" },
-            { label: "Reinheit", value: "99,2%" },
-            { label: "Temp Ø", value: "25°C" },
+            "Im Januar wurden acht Ligandenvarianten verglichen. L3 und L7 liefern die beste Selektivität, benötigen aber feinere Temperaturführung.",
+          findings: [
+            "L7 zeigt +12% Umsatz gegenüber Referenz",
+            "Nebenproduktbildung sinkt ab 35°C deutlich",
+            "Katalysatorstabilität bleibt über 6h konstant",
           ],
-          focus: [
-            "Selektivität und Aktivität vergleichen",
-            "Turnover bei niedriger Temperatur",
-            "Skalierbarkeit prüfen",
+          leadComment: "ToDo: Stabilitätsdaten in das gemeinsame LIMS einpflegen.",
+          followUps: [
+            "Temperatur-Rampenlauf für L7 (30–45°C)",
+            "Ligandenkombination L3/L7 in 1:1 testen",
+            "Langzeitlauf mit reduzierter Rührgeschwindigkeit",
           ],
-          steps: [
-            "L3-Lauf bei 40°C planen",
-            "Katalysator-Stabilität testen",
-            "Review der HPLC-Rohdaten",
-          ],
+          reportNote: "Berichtsversion 1.3 liegt im Projektordner Alpha-7.",
         },
         {
-          id: "EXP-24-090",
+          id: "EXP-26-012",
           name: "Optimierung Lösungsmittel",
           project: "Projekt Alpha-7",
-          date: "01.02.2024",
+          date: "12.01.2026",
           status: "in-progress",
           lead: "K. Müller",
-          site: "Lab B1",
+          teaser: "DMSO-Lauf zeigt Nebenprodukte, der DMF-Vergleich läuft.",
           summary:
-            "Testreihe mit polaren aprotischen Lösungsmitteln. Aktuell läuft der DMSO-Ansatz mit Nebenproduktbildung.",
-          metrics: [
-            { label: "Ausbeute", value: "—" },
-            { label: "Reinheit", value: "—" },
-            { label: "Temp Ø", value: "60°C" },
+            "Die Reihe mit polaren aprotischen Lösungsmitteln ist zu 70% abgeschlossen. Erste Tendenz: DMF senkt die Nebenproduktbildung, braucht aber längere Reaktionszeit.",
+          findings: [
+            "DMSO: Nebenprodukt 6% höher als Zielwert",
+            "DMF: 8h Reaktionszeit notwendig",
+            "Gemisch DMSO/MeCN zeigt stabile Emulsion",
           ],
-          focus: [
-            "Nebenproduktprofil reduzieren",
-            "DMSO vs. DMF vergleichen",
-            "Reaktionszeit evaluieren",
+          leadComment: "Allgemeiner Kommentar: Bitte NMR-Proben heute noch archivieren.",
+          followUps: [
+            "DMF-Lauf mit Katalysator-L7 wiederholen",
+            "Alternatives Lösungsmittel MeCN/EtOAc testen",
+            "Rührprofil anpassen, um Emulsion zu vermeiden",
           ],
-          steps: [
-            "Zwischenprobe nach 4h",
-            "NMR-Abgleich mit Referenz",
-            "Lösungsmittel-Mix testen",
-          ],
+          reportNote: "Zwischenbericht wird nach Abschluss der DMF-Reihe erstellt.",
         },
         {
-          id: "EXP-24-091",
+          id: "EXP-26-013",
           name: "Skalierung Batch 5kg",
           project: "Produktion Scale-Up",
-          date: "02.02.2024",
+          date: "17.01.2026",
           status: "review",
-          lead: "Dr. S. Schmidt",
-          site: "Pilotanlage",
+          lead: "S. Schmidt",
+          teaser: "Kühlleistung angepasst, QS prüft aktuell die Batch-Probe.",
           summary:
-            "Exothermie im zweiten Schritt höher als erwartet. Kühlleistung musste angepasst werden. Probe liegt in QS.",
-          metrics: [
-            { label: "Ausbeute", value: "92%" },
-            { label: "Reinheit", value: "TBD" },
-            { label: "Temp Ø", value: "45°C" },
+            "Die Exothermie in Schritt 2 lag 4°C über Planwert. Nach Korrektur der Kühlkurve ist der Batch stabil. QS-Daten werden erwartet.",
+          findings: [
+            "Temperaturspitze nach 18 Minuten erreicht",
+            "Reaktionsmischung bleibt homogen",
+            "Filtration dauerte 12% länger",
           ],
-          focus: [
-            "Wärmeabfuhr dokumentieren",
-            "QS-Ergebnis abwarten",
-            "Scale-up Sicherheit prüfen",
+          leadComment: "",
+          followUps: [
+            "Kühlkurve im Batch-Protokoll aktualisieren",
+            "EHS-Review vor nächstem 10kg-Lauf",
+            "QS-Ergebnis in Scale-up-Meeting vorstellen",
           ],
-          steps: [
-            "QS-Report einpflegen",
-            "Safety-Review mit EHS",
-            "Batch-Review Meeting",
-          ],
+          reportNote: "Der finale QS-Report wird direkt im Produktionsbericht verlinkt.",
         },
         {
-          id: "EXP-24-092",
+          id: "EXP-26-014",
           name: "Stabilitätsprüfung A4",
           project: "Langzeitstudie Q1",
-          date: "03.02.2024",
+          date: "22.01.2026",
           status: "planned",
           lead: "L. Fischer",
-          site: "Stabilitätskammer",
+          teaser: "Probenplan freigegeben, Startmessung wird vorbereitet.",
           summary:
-            "Vorbereitung der Proben für den 4-Wochen-Stress-Test bei 40°C/75% rF. Kammer reserviert.",
-          metrics: [
-            { label: "Ausbeute", value: "—" },
-            { label: "Reinheit", value: "—" },
-            { label: "Temp Ø", value: "40°C" },
+            "Der 4-Wochen-Stress-Test bei 40°C/75% rF ist für Ende Januar geplant. Alle Referenzstandards sind verfügbar, die Kammer ist bestätigt.",
+          findings: [
+            "Referenzstandards vollständig eingelagert",
+            "Kammerlog zeigt stabile Temperatur",
+            "Messplan wurde von QS freigegeben",
           ],
-          focus: [
-            "Kammer-Log prüfen",
-            "Probenplan finalisieren",
-            "Referenzstandards bereitstellen",
+          leadComment: "ToDo: Probenetiketten heute drucken und prüfen.",
+          followUps: [
+            "Startmessung am 28.01 dokumentieren",
+            "Monitoring-Slots für Woche 2 reservieren",
+            "Kontrollprobe mitführen",
           ],
-          steps: [
-            "Proben etikettieren",
-            "Startmessung dokumentieren",
-            "Monitoring-Slots reservieren",
-          ],
+          reportNote: "Ein erster Zwischenstand wird nach Woche 2 im Bericht ergänzt.",
         },
         {
-          id: "EXP-24-093",
+          id: "EXP-26-015",
           name: "Synthese Vorstufe B",
           project: "Projekt Beta-2",
-          date: "04.02.2024",
+          date: "30.01.2026",
           status: "completed",
-          lead: "Dr. M. Weber",
-          site: "Lab C2",
+          lead: "M. Weber",
+          teaser: "Ausbeute stabil, Kristallisation wurde beschleunigt.",
           summary:
-            "Standardprotokoll angewendet. Ausbeute leicht unter Erwartung, Reinheit exzellent. Kristallisation langsam.",
-          metrics: [
-            { label: "Ausbeute", value: "65%" },
-            { label: "Reinheit", value: "99,8%" },
-            { label: "Temp Ø", value: "0°C" },
+            "Die Synthese der Vorstufe B wurde mit optimiertem Kühlprofil wiederholt. Die Kristallisation verlief 40 Minuten schneller bei stabiler Reinheit.",
+          findings: [
+            "Ausbeute +6% gegenüber Dezember-Lauf",
+            "Kristallisationszeit von 3h auf 2h20 reduziert",
+            "Feuchtigkeitsgehalt innerhalb der Spezifikation",
           ],
-          focus: [
-            "Kristallisationsdauer optimieren",
-            "Alternative Kühlprofile testen",
-            "Vorstufe B in QS geben",
+          leadComment: "Allgemeiner Kommentar: Sehr guter Lauf, bitte SOP aktualisieren.",
+          followUps: [
+            "Kühlprofil in SOP übernehmen",
+            "Q2-Langzeitlagerung vorbereiten",
+            "Vorstufe B für Pilotlauf freigeben",
           ],
-          steps: [
-            "Laborbuch final signieren",
-            "Rückstellmuster archivieren",
-            "Materialfreigabe anstoßen",
-          ],
+          reportNote: "Finaler Synthesebericht liegt im Projektordner Beta-2.",
         },
       ];
 
@@ -518,12 +531,13 @@ const helloAppHtml = `<!doctype html>
       const detailProject = document.getElementById("detail-project");
       const detailLead = document.getElementById("detail-lead");
       const detailDate = document.getElementById("detail-date");
-      const detailSite = document.getElementById("detail-site");
       const detailStatus = document.getElementById("detail-status");
       const detailMeta = document.getElementById("detail-meta");
-      const detailMetrics = document.getElementById("detail-metrics");
-      const detailFocus = document.getElementById("detail-focus");
-      const detailSteps = document.getElementById("detail-steps");
+      const detailSummaryCard = document.getElementById("detail-summary-card");
+      const detailFindings = document.getElementById("detail-findings");
+      const detailComment = document.getElementById("detail-comment");
+      const detailFollowups = document.getElementById("detail-followups");
+      const detailReport = document.getElementById("detail-report");
       const serverMessage = document.getElementById("server-message");
       const refreshButton = document.getElementById("refresh");
 
@@ -566,35 +580,34 @@ const helloAppHtml = `<!doctype html>
       function renderDetails(experiment) {
         detailMeta.textContent = experiment.id;
         detailTitle.textContent = experiment.name;
-        detailSummary.textContent = experiment.summary;
+        detailSummary.textContent = experiment.teaser || experiment.summary;
         detailProject.textContent = experiment.project;
         detailLead.textContent = experiment.lead;
         detailDate.textContent = experiment.date;
-        detailSite.textContent = experiment.site;
         detailStatus.className = statusClass(experiment.status);
         detailStatus.textContent = STATUS_LABELS[experiment.status] || experiment.status;
 
-        detailMetrics.innerHTML = "";
-        experiment.metrics.forEach((metric) => {
-          const div = document.createElement("div");
-          div.className = "metric";
-          div.innerHTML = "<span>" + metric.label + "</span><strong>" + metric.value + "</strong>";
-          detailMetrics.appendChild(div);
-        });
+        detailSummaryCard.textContent = experiment.summary;
 
-        detailFocus.innerHTML = "";
-        experiment.focus.forEach((item) => {
+        detailFindings.innerHTML = "";
+        experiment.findings.forEach((item) => {
           const li = document.createElement("li");
           li.textContent = item;
-          detailFocus.appendChild(li);
+          detailFindings.appendChild(li);
         });
 
-        detailSteps.innerHTML = "";
-        experiment.steps.forEach((item) => {
+        detailComment.textContent = experiment.leadComment
+          ? experiment.leadComment
+          : "Kein Kommentar hinterlegt.";
+
+        detailFollowups.innerHTML = "";
+        experiment.followUps.forEach((item) => {
           const li = document.createElement("li");
           li.textContent = item;
-          detailSteps.appendChild(li);
+          detailFollowups.appendChild(li);
         });
+
+        detailReport.textContent = experiment.reportNote;
       }
 
       function setActive(id) {
