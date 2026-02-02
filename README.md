@@ -55,6 +55,7 @@ Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint 
 ## Troubleshooting
 
 - **SyntaxError in Vercel (Unexpected identifier)**: Die UI steckt als Template-String in `mcpServer.js`. Innerhalb des HTML/JS dürfen keine Backticks verwendet werden, sonst bricht das Parsing der Datei. Stattdessen normale Anführungszeichen oder String-Konkatenation nutzen.
+- **401 Authentication Required / HTML-Login-Seite**: Vercel-Preview-Deployments sind oft durch Deployment Protection geschützt. MCP-Hosts erwarten JSON und brechen bei einer HTML-Login-Seite mit 401/500 ab. Lösung: Deployment Protection für das Preview deaktivieren oder ein Bypass-Token verwenden. Alternativ den MCP-Host auf die Production-URL ohne Schutz zeigen lassen.
 
 ## Struktur
 
