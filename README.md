@@ -25,6 +25,11 @@ Der Server läuft dann unter:
    - MCP Endpoint: `https://<dein-projekt>.vercel.app/api/mcp`
    - Health Check: `https://<dein-projekt>.vercel.app/api/health`
 
+## Aktuelle Deployments
+
+- Dashboard: https://dashboard-mcp.vercel.app
+- MCP Host: https://mcp-host-snowy.vercel.app/
+
 ## Host konfigurieren (wichtig)
 
 Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint zeigen.
@@ -53,3 +58,4 @@ Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint 
 - `index.html`: Statische Landing-Page für das Vercel-Deployment
 - `mcpServer.js`: MCP-Tool + UI-Resource Definition
 - `updates.md`: Menschliches Änderungslog
+- `tests.md`: Schritt-für-Schritt-Anleitung für manuelle Tests (nicht-technisch)

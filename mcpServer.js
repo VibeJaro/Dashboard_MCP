@@ -530,7 +530,7 @@ const helloAppHtml = `<!doctype html>
       let activeId = EXPERIMENTS_DATA[0].id;
 
       function statusClass(status) {
-        return `status-chip status--${status}`;
+        return "status-chip status--" + status;
       }
 
       function renderList() {
@@ -538,12 +538,13 @@ const helloAppHtml = `<!doctype html>
         EXPERIMENTS_DATA.forEach((experiment) => {
           const button = document.createElement("button");
           button.type = "button";
-          button.className = `experiment-card${experiment.id === activeId ? " active" : ""}`;
+          button.className =
+            "experiment-card" + (experiment.id === activeId ? " active" : "");
           button.dataset.id = experiment.id;
 
           const meta = document.createElement("div");
           meta.className = "experiment-meta";
-          meta.textContent = `${experiment.id} · ${experiment.date}`;
+          meta.textContent = experiment.id + " · " + experiment.date;
 
           const title = document.createElement("div");
           title.className = "experiment-title";
@@ -574,11 +575,16 @@ const helloAppHtml = `<!doctype html>
         detailStatus.className = statusClass(experiment.status);
         detailStatus.textContent = STATUS_LABELS[experiment.status] || experiment.status;
 
-        detailMetrics.innerHTML = "";
+          detailMetrics.innerHTML = "";
         experiment.metrics.forEach((metric) => {
           const div = document.createElement("div");
           div.className = "metric";
-          div.innerHTML = `<span>${metric.label}</span><strong>${metric.value}</strong>`;
+          div.innerHTML =
+            "<span>" +
+            metric.label +
+            "</span><strong>" +
+            metric.value +
+            "</strong>";
           detailMetrics.appendChild(div);
         });
 
