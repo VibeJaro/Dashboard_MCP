@@ -23,3 +23,7 @@ Preview-Deployments können durch Vercel-Auth geschützt sein. MCP-Hosts bekomme
 ## Schritt 6 – Experiment-Detailansicht aktualisiert (Jan 2026)
 
 Die UI zeigt jetzt Experimente mit Januar-2026-Daten. In der Detailansicht wurden Versuchsleiter in „Laborant/in“ umbenannt, der Standort entfernt und die alten Messwerte-/Schwerpunkte-/Schritte-Kacheln durch neue Karten ersetzt: Kurzfassung, Main Findings, Kommentar der Labor-Teamleitung, Folgeversuche sowie ein Hinweis auf den vollständigen Bericht. Die README wurde entsprechend aktualisiert.
+
+## Schritt 7 – Experimentplanung und Follow-up-Kacheln ergänzt
+
+Die UI enthält jetzt eine obere Umschaltleiste zwischen Experimentübersicht und Experimentplanung. Folgeversuche werden als eigene Kacheln mit „Übernehmen“ und „Verwerfen“ dargestellt; verworfene Kacheln verschwinden aus der Ansicht. In der Planung kann ein Basis-Experiment gewählt, mehrere neue Versuche angelegt und abschließend bestätigt werden (inklusive Hinweis auf die Information des Laboranten). Geplante Experimente erscheinen zusammen mit den letzten fünf Einträgen in der linken Liste. README und UI wurden entsprechend aktualisiert.
