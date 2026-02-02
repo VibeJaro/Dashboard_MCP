@@ -25,6 +25,13 @@ Der Server läuft dann unter:
    - MCP Endpoint: `https://<dein-projekt>.vercel.app/api/mcp`
    - Health Check: `https://<dein-projekt>.vercel.app/api/health`
 
+## Aktuelle Live-URLs
+
+- Dashboard (Landing-Page): https://dashboard-mcp.vercel.app
+- MCP Endpoint: https://dashboard-mcp.vercel.app/api/mcp
+- Health Check: https://dashboard-mcp.vercel.app/api/health
+- MCP-Host: https://mcp-host-snowy.vercel.app/
+
 ## Host konfigurieren (wichtig)
 
 Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint zeigen.
@@ -44,6 +51,10 @@ Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint 
 - Tool: `dashboard_mcp_hello`
 - UI Resource: `ui://dashboard_mcp/hello`
 - Ergebnis: Eine Laborteam-Dashboard-UI mit 5 Experimenten in der linken Navigation und einer detaillierten Experimentübersicht inklusive Status- und Messwerten.
+
+## Troubleshooting
+
+- **SyntaxError in Vercel (Unexpected identifier)**: Die UI steckt als Template-String in `mcpServer.js`. Innerhalb des HTML/JS dürfen keine Backticks verwendet werden, sonst bricht das Parsing der Datei. Stattdessen normale Anführungszeichen oder String-Konkatenation nutzen.
 
 ## Struktur
 

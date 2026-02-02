@@ -11,3 +11,7 @@ Ich habe eine statische Startseite ergänzt, damit das Vercel-Deployment unter d
 ## Schritt 3 – Laborteam-Dashboard UI ergänzt
 
 Die MCP-App zeigt jetzt ein Laborteam-Dashboard mit fünf Experimenteinträgen in der linken Navigation. Beim Anklicken lädt eine Experimentübersicht mit Status, Messwerten, Schwerpunkten und nächsten Schritten. Die README wurde angepasst und ein kleiner UI-Test ergänzt.
+
+## Schritt 4 – SyntaxError im MCP-Server behoben
+
+In `mcpServer.js` war im eingebetteten UI-Skript ein Backtick-Template-String enthalten. Dadurch wurde der äußere HTML-Template-String vorzeitig beendet und Vercel konnte das Modul nicht mehr parsen (Fehler: „Unexpected identifier 'status'“). Die betroffenen Stellen wurden auf normale String-Konkatenation umgestellt und die README um einen Troubleshooting-Hinweis ergänzt.
