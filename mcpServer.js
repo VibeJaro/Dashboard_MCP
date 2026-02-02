@@ -126,6 +126,15 @@ const helloAppHtml = `<!doctype html>
         color: #64748b;
         margin: 0 0 12px 0;
       }
+      .sidebar-divider {
+        border-top: 1px solid #e2e8f0;
+        margin: 16px 0;
+        padding-top: 12px;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #94a3b8;
+      }
       .experiment-list {
         display: flex;
         flex-direction: column;
@@ -352,8 +361,65 @@ const helloAppHtml = `<!doctype html>
       }
       .planning-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 16px;
+      }
+      .planning-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .planning-header h2 {
+        margin: 0 0 6px 0;
+        font-size: 22px;
+      }
+      .planning-pills {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .planning-pill {
+        background: #ecfeff;
+        color: #0f766e;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #99f6e4;
+      }
+      .planning-switch {
+        display: flex;
+        gap: 8px;
+        background: #f1f5f9;
+        padding: 6px;
+        border-radius: 999px;
+        margin-bottom: 16px;
+      }
+      .planning-tab {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: #475569;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .planning-tab.active {
+        background: #0f766e;
+        color: #ffffff;
+        box-shadow: 0 6px 12px rgba(15, 118, 110, 0.25);
+      }
+      .planning-mode {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .planning-mode.is-hidden {
+        display: none;
       }
       .planning-field {
         display: flex;
@@ -465,8 +531,10 @@ const helloAppHtml = `<!doctype html>
 
       <main class="layout">
         <aside class="sidebar">
-          <h2>Geplante + letzte 5 Experimente</h2>
-          <div id="experiment-list" class="experiment-list"></div>
+          <h2>Letzte 5 Experimente</h2>
+          <div id="recent-experiment-list" class="experiment-list"></div>
+          <div class="sidebar-divider">Geplante Experimente</div>
+          <div id="planned-experiment-list" class="experiment-list"></div>
         </aside>
 
         <section class="content view" id="overview-view">
@@ -526,69 +594,82 @@ const helloAppHtml = `<!doctype html>
         </section>
 
         <section class="content view is-hidden" id="planning-view">
-          <div class="overview-card">
-            <div class="overview-header">
-              <div>
-                <div class="experiment-meta">Planungsmodus</div>
-                <h2>Experimentplanung</h2>
-                <p class="experiment-project">
-                  Wähle ein Experiment als Basis, passe die Bedingungen an und plane mehrere Folgeversuche.
-                </p>
-              </div>
-              <div class="status-chip status--planned">Planung aktiv</div>
+          <div class="detail-card planning-header">
+            <div>
+              <h2>Experimentplanung</h2>
+              <p class="notes-text">
+                Plane neue Versuche als Klartext-Auftrag oder leite Folgeversuche aus einem bestehenden Experiment ab.
+              </p>
             </div>
-            <div class="overview-meta">
-              <div class="meta-item">
-                <span>Basis-Experiment</span>
-                <strong id="planning-base-name"></strong>
-              </div>
-              <div class="meta-item">
-                <span>Planungsnotiz</span>
-                <strong id="planning-base-brief"></strong>
-              </div>
-              <div class="meta-item">
-                <span>Neue Versuche</span>
-                <strong id="planning-count">0</strong>
-              </div>
+            <div class="planning-pills">
+              <span class="planning-pill">Entwürfe: <span id="planning-count">0</span></span>
+              <span class="planning-pill">Freigegeben: <span id="planning-approved-count">0</span></span>
             </div>
           </div>
 
           <div class="planning-grid">
             <div class="detail-card">
-              <h3>Basis auswählen</h3>
-              <div class="planning-field">
-                <label for="planning-base-select">Experiment</label>
-                <select id="planning-base-select"></select>
+              <div class="planning-switch" role="tablist">
+                <button class="planning-tab active" type="button" data-planning="new">Neuer Versuch</button>
+                <button class="planning-tab" type="button" data-planning="followup">Folgeversuch</button>
               </div>
-              <p class="notes-text" id="planning-base-summary" style="margin-top: 12px;"></p>
+
+              <div class="planning-mode" id="planning-mode-new">
+                <h3>Versuch komplett neu planen</h3>
+                <p class="notes-text">
+                  Beschreibe den Versuch als kurze Anweisung für das Laborteam (ein Textfeld, keine Zusatzparameter).
+                </p>
+                <div class="planning-field">
+                  <label for="planning-new-text">Kurzbeschreibung</label>
+                  <textarea
+                    id="planning-new-text"
+                    placeholder="z. B. Bitte neuen Screening-Lauf für Katalysator L9 bei 40°C mit Standard-Rührprofil durchführen."
+                  ></textarea>
+                </div>
+                <div class="planning-actions">
+                  <button class="btn btn-primary" id="planning-new-add" type="button">Entwurf anlegen</button>
+                  <button class="btn btn-secondary" id="planning-new-reset" type="button">Text leeren</button>
+                </div>
+              </div>
+
+              <div class="planning-mode is-hidden" id="planning-mode-followup">
+                <h3>Folgeversuche auf Basis eines Experiments</h3>
+                <div class="planning-field">
+                  <label for="planning-base-select">Basis-Experiment</label>
+                  <select id="planning-base-select"></select>
+                </div>
+                <p class="notes-text" id="planning-base-summary"></p>
+                <div class="planning-field">
+                  <label for="planning-variation">Gewünschte Änderungen</label>
+                  <textarea
+                    id="planning-variation"
+                    placeholder="z. B. Temperaturfenster 35–45°C und alternative Ligandenkombination testen"
+                  ></textarea>
+                </div>
+                <div class="planning-field">
+                  <label for="planning-notes">Zusätzliche Hinweise</label>
+                  <textarea
+                    id="planning-notes"
+                    placeholder="z. B. Proben nach 2h und 4h entnehmen, Emulsionsmonitoring aktivieren"
+                  ></textarea>
+                </div>
+                <div class="planning-field">
+                  <label for="planning-repeat">Anzahl der Folgeversuche</label>
+                  <input id="planning-repeat" type="number" min="1" max="5" value="1" />
+                </div>
+                <div class="planning-actions">
+                  <button class="btn btn-primary" id="planning-add" type="button">Folgeversuch anlegen</button>
+                  <button class="btn btn-secondary" id="planning-reset" type="button">Felder leeren</button>
+                </div>
+              </div>
             </div>
 
             <div class="detail-card">
-              <h3>Neuen Versuch planen</h3>
-              <div class="planning-field">
-                <label for="planning-variation">Änderungsschwerpunkt</label>
-                <input id="planning-variation" type="text" placeholder="z. B. Temperaturfenster 35–45°C" />
-              </div>
-              <div class="planning-field" style="margin-top: 10px;">
-                <label for="planning-duration">Laufzeit</label>
-                <input id="planning-duration" type="text" placeholder="z. B. 8h, 12h" />
-              </div>
-              <div class="planning-field" style="margin-top: 10px;">
-                <label for="planning-notes">Zusätzliche Hinweise</label>
-                <textarea id="planning-notes" placeholder="z. B. Rührprofil anpassen, Probe nach 2h entnehmen"></textarea>
-              </div>
-              <div class="planning-field" style="margin-top: 10px;">
-                <label for="planning-repeat">Anzahl neuer Versuche</label>
-                <input id="planning-repeat" type="number" min="1" max="5" value="1" />
-              </div>
-              <div class="planning-actions">
-                <button class="btn btn-primary" id="planning-add" type="button">Versuch hinzufügen</button>
-                <button class="btn btn-secondary" id="planning-reset" type="button">Felder leeren</button>
-              </div>
-            </div>
-
-            <div class="detail-card">
-              <h3>Geplante Experimente</h3>
+              <h3>Versuche in Planung</h3>
+              <p class="notes-text">
+                Diese Entwürfe sind noch nicht freigegeben. Nach der Freigabe erscheinen sie links unter „Geplante
+                Experimente“.
+              </p>
               <div id="planning-list" class="experiment-list" style="gap: 10px;"></div>
             </div>
           </div>
@@ -780,7 +861,8 @@ const helloAppHtml = `<!doctype html>
         planned: "Geplant",
       };
 
-      const listEl = document.getElementById("experiment-list");
+      const recentListEl = document.getElementById("recent-experiment-list");
+      const plannedListEl = document.getElementById("planned-experiment-list");
       const detailTitle = document.getElementById("detail-title");
       const detailSummary = document.getElementById("detail-summary");
       const detailProject = document.getElementById("detail-project");
@@ -797,12 +879,16 @@ const helloAppHtml = `<!doctype html>
       const planningView = document.getElementById("planning-view");
       const modeTabs = Array.from(document.querySelectorAll(".mode-tab"));
       const planningBaseSelect = document.getElementById("planning-base-select");
-      const planningBaseName = document.getElementById("planning-base-name");
-      const planningBaseBrief = document.getElementById("planning-base-brief");
       const planningBaseSummary = document.getElementById("planning-base-summary");
       const planningCount = document.getElementById("planning-count");
+      const planningApprovedCount = document.getElementById("planning-approved-count");
+      const planningTabs = Array.from(document.querySelectorAll(".planning-tab"));
+      const planningModeNew = document.getElementById("planning-mode-new");
+      const planningModeFollowup = document.getElementById("planning-mode-followup");
+      const planningNewText = document.getElementById("planning-new-text");
+      const planningNewAdd = document.getElementById("planning-new-add");
+      const planningNewReset = document.getElementById("planning-new-reset");
       const planningVariation = document.getElementById("planning-variation");
-      const planningDuration = document.getElementById("planning-duration");
       const planningNotes = document.getElementById("planning-notes");
       const planningRepeat = document.getElementById("planning-repeat");
       const planningAdd = document.getElementById("planning-add");
@@ -813,6 +899,9 @@ const helloAppHtml = `<!doctype html>
 
       let activeId = EXPERIMENTS_DATA[0].id;
       let plannedCounter = 103;
+      let draftCounter = 1;
+
+      const DRAFT_PLANS = [];
 
       function statusClass(status) {
         return "status-chip status--" + status;
@@ -822,9 +911,16 @@ const helloAppHtml = `<!doctype html>
         return [...PLANNED_EXPERIMENTS, ...EXPERIMENTS_DATA];
       }
 
-      function renderList() {
-        listEl.innerHTML = "";
-        getAllExperiments().forEach((experiment) => {
+      function renderSidebarList(targetEl, experiments, emptyText) {
+        targetEl.innerHTML = "";
+        if (experiments.length === 0) {
+          const empty = document.createElement("p");
+          empty.className = "notes-text";
+          empty.textContent = emptyText;
+          targetEl.appendChild(empty);
+          return;
+        }
+        experiments.forEach((experiment) => {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "experiment-card" + (experiment.id === activeId ? " active" : "");
@@ -848,8 +944,22 @@ const helloAppHtml = `<!doctype html>
 
           button.append(meta, title, project, chip);
           button.addEventListener("click", () => setActive(experiment.id));
-          listEl.appendChild(button);
+          targetEl.appendChild(button);
         });
+      }
+
+      function renderSidebar() {
+        renderSidebarList(
+          recentListEl,
+          EXPERIMENTS_DATA.slice(0, 5),
+          "Noch keine letzten Experimente verfügbar.",
+        );
+        renderSidebarList(
+          plannedListEl,
+          PLANNED_EXPERIMENTS,
+          "Noch keine geplanten Experimente freigegeben.",
+        );
+        planningApprovedCount.textContent = String(PLANNED_EXPERIMENTS.length);
       }
 
       function renderDetails(experiment) {
@@ -903,6 +1013,16 @@ const helloAppHtml = `<!doctype html>
           acceptButton.type = "button";
           acceptButton.className = "btn btn-accept";
           acceptButton.textContent = "Übernehmen";
+          acceptButton.addEventListener("click", () => {
+            addFollowupDraft(experiment, item, "", 1);
+            experiment.followUps = experiment.followUps.filter((entry) => entry !== item);
+            renderFollowups(experiment);
+            renderPlannedExperiments();
+            setView("planning");
+            setPlanningMode("followup");
+            planningBaseSelect.value = experiment.id;
+            updatePlanningBase();
+          });
 
           const dismissButton = document.createElement("button");
           dismissButton.type = "button";
@@ -923,12 +1043,12 @@ const helloAppHtml = `<!doctype html>
         activeId = id;
         const experiment = getAllExperiments().find((item) => item.id === id);
         if (experiment) {
-          renderList();
+          renderSidebar();
           renderDetails(experiment);
         }
       }
 
-      renderList();
+      renderSidebar();
       setActive(activeId);
 
       function renderPlanningBaseOptions() {
@@ -944,14 +1064,20 @@ const helloAppHtml = `<!doctype html>
       function updatePlanningBase() {
         const baseExperiment = EXPERIMENTS_DATA.find((item) => item.id === planningBaseSelect.value);
         if (!baseExperiment) return;
-        planningBaseName.textContent = baseExperiment.name;
-        planningBaseBrief.textContent = baseExperiment.planningBrief || baseExperiment.summary;
         planningBaseSummary.textContent = baseExperiment.summary;
       }
 
       function renderPlannedExperiments() {
         planningList.innerHTML = "";
-        PLANNED_EXPERIMENTS.forEach((experiment) => {
+        if (DRAFT_PLANS.length === 0) {
+          const empty = document.createElement("p");
+          empty.className = "notes-text";
+          empty.textContent = "Keine Entwürfe angelegt.";
+          planningList.appendChild(empty);
+          planningCount.textContent = "0";
+          return;
+        }
+        DRAFT_PLANS.forEach((experiment) => {
           const card = document.createElement("div");
           card.className = "planning-card";
 
@@ -966,59 +1092,76 @@ const helloAppHtml = `<!doctype html>
           note.textContent = experiment.summary;
 
           const meta = document.createElement("p");
-          meta.textContent = "Basis: " + experiment.project + " · " + experiment.date;
+          meta.textContent = experiment.meta;
 
           card.append(tag, title, note, meta);
           planningList.appendChild(card);
         });
-        planningCount.textContent = String(PLANNED_EXPERIMENTS.length);
+        planningCount.textContent = String(DRAFT_PLANS.length);
       }
 
       function resetPlanningFields() {
+        planningNewText.value = "";
         planningVariation.value = "";
-        planningDuration.value = "";
         planningNotes.value = "";
         planningRepeat.value = 1;
+      }
+
+      function addDraftPlan(entry) {
+        const draftId = "DRAFT-26-" + String(draftCounter).padStart(3, "0");
+        draftCounter += 1;
+        DRAFT_PLANS.unshift({
+          id: draftId,
+          name: entry.name,
+          summary: entry.summary,
+          meta: entry.meta,
+          baseExperiment: entry.baseExperiment || null,
+          notes: entry.notes || "",
+        });
+        planningNotice.classList.remove("visible");
+        renderPlannedExperiments();
+      }
+
+      function addNewExperimentDraft() {
+        const text = planningNewText.value.trim();
+        if (!text) {
+          window.alert("Bitte einen kurzen Klartext für den neuen Versuch eingeben.");
+          return;
+        }
+        addDraftPlan({
+          name: "Neuer Versuch",
+          summary: text,
+          meta: "Neuer Klartext-Auftrag",
+        });
+        planningNewText.value = "";
+      }
+
+      function addFollowupDraft(baseExperiment, variation, notes, repeatCount) {
+        for (let i = 0; i < repeatCount; i += 1) {
+          addDraftPlan({
+            name: variation || "Folgeversuch anpassen",
+            summary:
+              "Basierend auf " +
+              baseExperiment.id +
+              " · " +
+              (variation || "Optimierung basierend auf Teamhinweis") +
+              (notes ? " · Hinweise: " + notes : ""),
+            meta: "Basis: " + baseExperiment.id + " · " + baseExperiment.project,
+            baseExperiment,
+            notes,
+          });
+        }
       }
 
       function addPlannedExperiment() {
         const baseExperiment = EXPERIMENTS_DATA.find((item) => item.id === planningBaseSelect.value);
         if (!baseExperiment) return;
 
-        const variation = planningVariation.value.trim() || "Optimierung der Parameter";
-        const duration = planningDuration.value.trim() || "Standardlaufzeit";
+        const variation = planningVariation.value.trim();
         const notes = planningNotes.value.trim();
         const repeatCount = Math.max(1, Number(planningRepeat.value) || 1);
 
-        for (let i = 0; i < repeatCount; i += 1) {
-          const plannedId = "PLAN-26-" + plannedCounter;
-          plannedCounter += 1;
-          PLANNED_EXPERIMENTS.unshift({
-            id: plannedId,
-            name: variation,
-            project: baseExperiment.project,
-            date: "geplant",
-            status: "planned",
-            lead: baseExperiment.lead,
-            teaser: "Geplant ausgehend von " + baseExperiment.id + ".",
-            planningBrief: baseExperiment.planningBrief || baseExperiment.summary,
-            summary:
-              "Basierend auf " +
-              baseExperiment.id +
-              " · " +
-              variation +
-              " · Laufzeit: " +
-              duration +
-              (notes ? " · Hinweise: " + notes : ""),
-            findings: ["Neu geplant, Startfenster in Abstimmung."],
-            leadComment: "",
-            followUps: [],
-            reportNote: "Planungsversion gespeichert.",
-          });
-        }
-
-        renderList();
-        renderPlannedExperiments();
+        addFollowupDraft(baseExperiment, variation, notes, repeatCount);
         resetPlanningFields();
       }
 
@@ -1029,24 +1172,75 @@ const helloAppHtml = `<!doctype html>
         modeTabs.forEach((tab) => {
           tab.classList.toggle("active", tab.dataset.view === view);
         });
+        if (isPlanning && planningBaseSelect.value === "") {
+          planningBaseSelect.value = EXPERIMENTS_DATA[0]?.id || "";
+          updatePlanningBase();
+        }
       }
 
       modeTabs.forEach((tab) => {
         tab.addEventListener("click", () => setView(tab.dataset.view));
       });
 
+      function setPlanningMode(mode) {
+        planningModeNew.classList.toggle("is-hidden", mode !== "new");
+        planningModeFollowup.classList.toggle("is-hidden", mode !== "followup");
+        planningTabs.forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.planning === mode);
+        });
+      }
+
+      planningTabs.forEach((tab) => {
+        tab.addEventListener("click", () => setPlanningMode(tab.dataset.planning));
+      });
+
       planningBaseSelect.addEventListener("change", updatePlanningBase);
       planningAdd.addEventListener("click", addPlannedExperiment);
       planningReset.addEventListener("click", resetPlanningFields);
+      planningNewAdd.addEventListener("click", addNewExperimentDraft);
+      planningNewReset.addEventListener("click", () => {
+        planningNewText.value = "";
+      });
       planningConfirm.addEventListener("click", () => {
-        const confirmed = window.confirm("Planung abschließen und Laborant informieren?");
-        if (confirmed) {
-          planningNotice.classList.add("visible");
+        if (DRAFT_PLANS.length === 0) {
+          window.alert("Keine Entwürfe vorhanden. Lege zuerst Versuche an.");
+          return;
         }
+        const confirmed = window.confirm("Planung freigeben und Experimente an das Laborteam übergeben?");
+        if (!confirmed) return;
+        DRAFT_PLANS.forEach((draft) => {
+          const plannedId = "PLAN-26-" + plannedCounter;
+          plannedCounter += 1;
+          const base = draft.baseExperiment;
+          const projectName = base ? base.project : "Neue Planung";
+          const leadName = base ? base.lead : "Laborteam";
+          PLANNED_EXPERIMENTS.unshift({
+            id: plannedId,
+            name: draft.name,
+            project: projectName,
+            date: "geplant",
+            status: "planned",
+            lead: leadName,
+            teaser: base
+              ? "Geplant ausgehend von " + base.id + "."
+              : "Neuer Versuch aus Klartext-Auftrag.",
+            planningBrief: draft.summary,
+            summary: draft.summary,
+            findings: ["Freigegeben, Startfenster wird koordiniert."],
+            leadComment: "",
+            followUps: [],
+            reportNote: "Freigabe dokumentiert.",
+          });
+        });
+        DRAFT_PLANS.splice(0, DRAFT_PLANS.length);
+        renderSidebar();
+        renderPlannedExperiments();
+        planningNotice.classList.add("visible");
       });
 
       renderPlanningBaseOptions();
       updatePlanningBase();
+      setPlanningMode("new");
       renderPlannedExperiments();
     </script>
   </body>

@@ -50,7 +50,7 @@ Damit der Host die Daten und die UI bekommen kann, muss er auf den MCP Endpoint 
 
 - Tool: `dashboard_mcp_hello`
 - UI Resource: `ui://dashboard_mcp/hello`
-- Ergebnis: Eine Laborteam-Dashboard-UI mit Tabs für Experimentübersicht und Experimentplanung, einer kombinierten Liste geplanter und letzter Experimente sowie Detailkarten für Kurzfassung, Main Findings, Kommentar der Labor-Teamleitung, Folgeversuche (als interaktive Kacheln) und einen Hinweis auf den vollständigen Bericht. In der Planung lassen sich Basis-Experimente auswählen und mehrere neue Versuche samt Freigabe anlegen.
+- Ergebnis: Eine Laborteam-Dashboard-UI mit Tabs für Experimentübersicht und Experimentplanung, einer zweigeteilten linken Liste (letzte Experimente oben, freigegebene geplante unten) sowie Detailkarten für Kurzfassung, Main Findings, Kommentar der Labor-Teamleitung, Folgeversuche (als interaktive Kacheln) und einen Hinweis auf den vollständigen Bericht. In der Planung gibt es einen Klartext-Modus für komplett neue Versuche und einen Folgeversuchs-Modus, der auf bestehenden Experimenten aufsetzt; Entwürfe erscheinen erst nach Freigabe in der linken Liste.
 
 ## Troubleshooting
 
