@@ -611,6 +611,8 @@ const helloAppHtml = `<!doctype html>
 
       const pending = new Map();
       let lastRequestId = 0;
+      const toolTimeoutMs = 12000;
+      const debugEnabled = new URLSearchParams(window.location.search).has("mcpDebug");
 
       function setPending(isPending) {
         refreshButton.disabled = isPending;
@@ -630,24 +632,36 @@ const helloAppHtml = `<!doctype html>
         }
       }
 
+      function logDebug(...args) {
+        if (debugEnabled) {
+          console.debug("[mcp-ui]", ...args);
+        }
+      }
+
       function handleMessage(event) {
-        const data = typeof event.data === "string" ? safeJsonParse(event.data) : event.data;
+        const rawData = typeof event.data === "string" ? safeJsonParse(event.data) : event.data;
+        if (!rawData) return;
+        logDebug("message", rawData);
+
+        const data = rawData.jsonrpc === "2.0" ? rawData : rawData.raw;
         if (!data || data.jsonrpc !== "2.0") return;
 
         if (data.method === "tools/notify") {
           return;
         }
 
-        if (data.result || data.error || data.toolResult) {
+        if (data.result || data.error || data.toolResult || rawData.text) {
           const resultData = data.toolResult || data.result;
-          const text = parseToolResult(resultData);
+          const text = rawData.text || parseToolResult(resultData);
           if (text) {
             serverMessage.textContent = text;
           }
-          const pendingResolver = pending.get(data.id);
-          if (pendingResolver) {
-            pendingResolver();
-            pending.delete(data.id);
+          const id = data.id ?? rawData.id;
+          const pendingEntry = pending.get(String(id));
+          if (pendingEntry) {
+            clearTimeout(pendingEntry.timeoutId);
+            pendingEntry.resolve();
+            pending.delete(String(id));
           }
           setPending(false);
         }
@@ -675,8 +689,17 @@ const helloAppHtml = `<!doctype html>
         };
         setPending(true);
         return new Promise((resolve) => {
-          pending.set(id, resolve);
+          const timeoutId = setTimeout(() => {
+            if (!pending.has(String(id))) return;
+            pending.delete(String(id));
+            serverMessage.textContent =
+              "Keine Antwort vom Host/MCP-Server erhalten. Bitte erneut versuchen.";
+            setPending(false);
+            resolve();
+          }, toolTimeoutMs);
+          pending.set(String(id), { resolve, timeoutId });
           window.parent.postMessage(payload, "*");
+          logDebug("callTool sent", payload);
         });
       }
 
